@@ -84,17 +84,6 @@ RUN x86_64-w64-mingw32-strip --strip-unneeded "$INSTALL_PREFIX"/lib/wine/x86_64-
 
 FROM debian:stable-slim
 ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update && \
-    apt install -y --no-install-recommends \
-        cabextract\
-        ca-certificates\
-        curl\
-        libxcomposite1\
-        libxinerama1\
-        libxrandr2\
-        winbind\
-    && apt clean -y && \
-    rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /opt/wine/ /opt/wine/
 
@@ -103,3 +92,34 @@ ADD https://raw.githubusercontent.com/Winetricks/winetricks/$WINETRICKS_VERSION/
 RUN chmod 755 /usr/local/bin/winetricks
 
 ENV PATH=/opt/wine/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+RUN apt-get update && \
+    apt install -y --no-install-recommends \
+        ca-certificates\
+        cabextract\
+        curl\
+        libasound2-plugins\
+        libcap2-bin\
+        libfontconfig1\
+        libfreetype6\
+        libglu1-mesa\
+        libgnutls30\
+        libgssapi-krb5-2\
+        libkrb5-3\
+        libncurses6\
+        libodbc1\
+        libosmesa6\
+        libsdl2-2.0-0\
+        libv4l-0\
+        libxcomposite1\
+        libxcursor1\
+        libxfixes3\
+        libxi6\
+        libxinerama1\
+        libxrandr2\
+        libxrandr2\
+        libxrender1\
+        libxxf86vm1\
+        winbind\
+    && apt clean -y && \
+    rm -rf /var/lib/apt/lists/*
