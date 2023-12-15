@@ -11,8 +11,14 @@ IMAGE_TAG := $(WINE_VERSION)-wow64
 IMAGE := panard/wine:$(IMAGE_TAG)
 
 build:
+	$(DOCKER) build $(BUILD_ARGS) -t $(IMAGE) .
+
+buildx:
 	$(DOCKER) buildx build --platform $(PLATFORMS) $(BUILD_ARGS) .
 
-load: build
+load: buildx
 	$(DOCKER) buildx build --platform $(PLATFORMS) $(BUILD_ARGS) -t $(IMAGE) --load .
 	echo $(IMAGE)
+
+push: buildx
+	$(DOCKER) buildx build --platform $(PLATFORMS) $(BUILD_ARGS) -t $(IMAGE) --push .
