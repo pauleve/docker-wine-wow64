@@ -14,13 +14,16 @@ build:
 	$(DOCKER) build $(BUILD_ARGS) -t $(IMAGE) .
 push:
 	$(DOCKER) push $(IMAGE)
+deps:
+	$(DOCKER) pull debian:stable-slim
+	$(DOCKER) pull debian:stable
 
 buildx:
 	$(DOCKER) buildx build --platform $(PLATFORMS) $(BUILD_ARGS) .
 
 loadx: buildx
-	$(DOCKER) buildx build --platform $(PLATFORMS) $(BUILD_ARGS) -t $(IMAGE) --load .
-	echo $(IMAGE)
+	$(DOCKER) buildx build --platform $(PLATFORMS) $(BUILD_ARGS) -t $(IMAGE)x --load .
+	echo $(IMAGE)x
 
 pushx: buildx
-	$(DOCKER) buildx build --platform $(PLATFORMS) $(BUILD_ARGS) -t $(IMAGE) --push .
+	$(DOCKER) buildx build --platform $(PLATFORMS) $(BUILD_ARGS) -t $(IMAGE)x --push .
