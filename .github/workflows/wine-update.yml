@@ -1,0 +1,37 @@
+name: Automated Wine update
+on:
+  schedule:
+    - cron:  '0 8 * * Sat'
+
+jobs:
+  updateWine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: main
+          token: ${{ secrets.PAT }}
+      - name: Get Latest Wine Version
+        id: wine
+        run: |
+          echo ::set-output name=release_tag::$(curl -sL https://www.winehq.org/news/ |grep "The Wine development release" |head -n1|cut -d " " -f6)
+          echo ::set-output name=current_tag::$(grep WINE_VERSION= Makefile|cut -d= -f2)
+      - name: Login to docker hub
+        if: steps.wine.outputs.current_tag != steps.wine.outputs.release_tag
+        uses: actions-hub/docker/login@master
+        env:
+            DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+            DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Update Wine
+        if: steps.wine.outputs.current_tag != steps.wine.outputs.release_tag
+        env:
+          RELEASE_TAG: ${{ steps.wine.outputs.release_tag }}
+        run: |
+            sed -i "s:WINE_VERSION=.*$:WINE_VERSION=$RELEASE_TAG:" Makefile
+            make build
+            make push
+            git tag wine-$RELEASE_TAG
+            git add Makefile
+            git commit -m "update to wine $RELEASE_TAG"
+            git push
+            git push --tags
