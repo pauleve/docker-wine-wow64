@@ -21,9 +21,9 @@ deps:
 buildx:
 	$(DOCKER) buildx build --platform $(PLATFORMS) $(BUILD_ARGS) .
 
-loadx: buildx
+loadx:
 	$(DOCKER) buildx build --platform $(PLATFORMS) $(BUILD_ARGS) -t $(IMAGE)x --load .
 	echo $(IMAGE)x
 
-pushx: buildx
+pushx:
 	$(DOCKER) buildx build --platform $(PLATFORMS) $(BUILD_ARGS) -t $(IMAGE)x --push .
