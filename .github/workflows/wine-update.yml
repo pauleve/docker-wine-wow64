@@ -13,7 +13,7 @@ jobs:
       - name: Get Latest Wine Version
         id: wine
         run: |
-          echo ::set-output name=release_tag::$(curl -sL https://www.winehq.org/news/ |grep "The Wine development release" |head -n1|cut -d " " -f6)
+          echo ::set-output name=release_tag::$(curl -sL https://www.winehq.org/news/ |grep "The Wine development release" |head -n1|cut -d " " -f5)
           echo ::set-output name=current_tag::$(grep WINE_VERSION= Makefile|cut -d= -f2)
       - name: Login to docker hub
         if: steps.wine.outputs.current_tag != steps.wine.outputs.release_tag
