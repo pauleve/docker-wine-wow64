@@ -26,7 +26,7 @@ jobs:
         env:
           RELEASE_TAG: ${{ steps.wine.outputs.release_tag }}
         run: |
-            sed -i "s:WINE_VERSION=.*$:WINE_VERSION=$RELEASE_TAG:" Makefile
+            sed -i "s:^WINE_VERSION = .*$:WINE_VERSION = $RELEASE_TAG:" Makefile
             make build
             make push
             git tag wine-$RELEASE_TAG
