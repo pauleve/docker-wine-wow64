@@ -2,6 +2,7 @@ name: Automated Wine update
 on:
   schedule:
     - cron:  '0 8 * * Sat'
+  workflow_dispatch:
 
 jobs:
   updateWine:
