@@ -25,7 +25,7 @@ jobs:
             make build
       - name: Login to docker hub
         if: steps.wine.outputs.current_tag != steps.wine.outputs.release_tag
-        uses: actions-hub/docker/login@v3
+        uses: actions-hub/docker/login@master
         env:
             DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
             DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
