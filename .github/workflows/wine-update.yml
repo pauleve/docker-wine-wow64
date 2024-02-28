@@ -11,37 +11,37 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: main
+          clean: false
       - name: Get Latest Wine Version
         id: wine
         run: |
-          echo ::set-output name=release_tag::$(curl -sL https://www.winehq.org/news/ |grep "The Wine development release" |head -n1|cut -d " " -f5)
-          echo ::set-output name=current_tag::$(grep "WINE_VERSION = " Makefile|cut -d' ' -f3)
+          RELEASE_TAG=$(curl -sL https://www.winehq.org/news/ |grep "The Wine development release" |head -n1|cut -d " " -f5)
+          CURRENT_TAG=$(grep "WINE_VERSION = " Makefile|cut -d" "  -f3)
+          echo RELEASE_TAG=${RELEASE_TAG} >> $GITHUB_ENV
+          echo CURRENT_TAG=${RELEASE_TAG} >> $GITHUB_ENV
       - name: Update Wine
-        if: steps.wine.outputs.current_tag != steps.wine.outputs.release_tag
-        env:
-          RELEASE_TAG: ${{ steps.wine.outputs.release_tag }}
+        if: env.UPDATE_TAG != env.CURRENT_TAG
         run: |
             sed -i "s:^WINE_VERSION = .*$:WINE_VERSION = $RELEASE_TAG:" Makefile
             make build
+            echo UPDATE_TAG=1 >> $GITHUB_ENV
       - name: Login to docker hub
-        if: steps.wine.outputs.current_tag != steps.wine.outputs.release_tag
+        if: env.UPDATE_TAG == 1
         uses: actions-hub/docker/login@master
         env:
             DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
             DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       - name: Push image
-        if: steps.wine.outputs.current_tag != steps.wine.outputs.release_tag
+        if: env.UPDATE_TAG == 1
         uses: actions-hub/docker@master
         with:
-          args: push panard/wine:${{ steps.wine.outputs.release_tag }}-wow64
-      - name: Push
-        env:
-          RELEASE_TAG: ${{ steps.wine.outputs.release_tag }}
-        if: steps.wine.outputs.current_tag != steps.wine.outputs.release_tag
+          args: push panard/wine:${{ env.RELEASE_TAG }}-wow64
+      - name: Git tag
+        if: env.UPDATE_TAG == 1
         run: |
-            git tag wine-$RELEASE_TAG
+            git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git config --local user.name "github-actions[bot]"
             git add Makefile
             git commit -m "update to wine $RELEASE_TAG"
-            git push
-            git push --tags
-            make push
+            git tag wine-$RELEASE_TAG
+            git push --all
