@@ -18,9 +18,9 @@ jobs:
           RELEASE_TAG=$(curl -sL https://www.winehq.org/news/ |grep "The Wine development release" |head -n1|cut -d " " -f5)
           CURRENT_TAG=$(grep "WINE_VERSION = " Makefile|cut -d" "  -f3)
           echo RELEASE_TAG=${RELEASE_TAG} >> $GITHUB_ENV
-          echo CURRENT_TAG=${RELEASE_TAG} >> $GITHUB_ENV
+          echo CURRENT_TAG=${CURRENT_TAG} >> $GITHUB_ENV
       - name: Update Wine
-        if: env.UPDATE_TAG != env.CURRENT_TAG
+        if: env.RELEASE_TAG != env.CURRENT_TAG
         run: |
             sed -i "s:^WINE_VERSION = .*$:WINE_VERSION = $RELEASE_TAG:" Makefile
             make build
