@@ -38,7 +38,7 @@ RUN apt-get install -y --no-install-recommends\
         libsane-dev\
         libsdl2-dev\
         libssl-dev\
-        libstdc++-11-dev\
+        libstdc++-12-dev\
         libudev-dev\
         libvulkan-dev\
         libx11-dev\
