@@ -107,12 +107,14 @@ RUN apt-get update && \
         libgssapi-krb5-2\
         libkrb5-3\
         libncurses6\
-        libodbc1\
+        libodbc2\
         libosmesa6\
         libsdl2-2.0-0\
+        libunwind8\
         libv4l-0\
         libxcomposite1\
         libxcursor1\
+        libxext6\
         libxfixes3\
         libxi6\
         libxinerama1\
