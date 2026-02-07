@@ -3,7 +3,7 @@ DOCKER=docker
 
 PLATFORMS=linux/amd64,linux/arm64/v8
 
-WINE_VERSION = 11.1
+WINE_VERSION = 11.2
 
 BUILD_ARGS := --build-arg WINE_VERSION=$(WINE_VERSION)
 
